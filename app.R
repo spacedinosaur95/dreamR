@@ -52,11 +52,7 @@ vectorDream <- paste(cleanTextDream,collapse=" ")
 remwords <- c("that","and","the")
 vectorDream <- removeWords(vectorDream,c(stopwords("english"),remwords))
 
-mood <- c(2, 2, 4, 3, 3, 4)
-hoursOfSleep <- c(6, 6.5, 8, 7, 7.5, 8)
-x = c("10/23/2016", "10/24/2016", "10/25/2016", "10/26/2016"
-      , "10/27/2016", "10/28/2016")
-sleepmood <- data.frame(x, hoursOfSleep, mood)
+
 
 # establishing the server component 
 server <- function(input, output, session){ 
@@ -70,6 +66,23 @@ server <- function(input, output, session){
   output$plot2 <- renderPlot({
     wordcloud(vectorDream, scale=c(6,0.7), max.words=150, 
               random.order=FALSE, rot.per=0.35,colors=brewer.pal(8,"Dark2"))
+  })
+  
+  #things... stress... nightmares 
+  output$plot4 <- renderPlotly({
+  x <- c("10/24", "10/25", "10/26", "10/27", "10/28")
+  stress<- c(5, 5, 4, 3, 2)
+  nightmare <- c(0, 4, 2, 0, 0)
+  
+  nightmareStress <- data.frame(x, stress, nightmare)
+  
+  p <- plot_ly(nightmareStress, x =~x, y = ~stress, type = 'scatter', mode = 'lines', name = 'Stress Level') %>%
+    add_trace(y = ~nightmare, type = 'scatter', mode = 'lines', name = 'Nightmare Level') %>%
+    
+    layout(title = 'Stress Level and Nightmare Intensity',
+           xaxis = list(title = 'X axis'),
+           yaxis = list(title = 'Y axis')
+)
   })
   #showing the table
   output$plot3 <- renderPlotly({
@@ -86,7 +99,7 @@ server <- function(input, output, session){
       add_trace(y = ~y2, name = 'Nightmare') %>%
       add_trace(y = ~y3, name = 'Reoccuring Nightmare') %>%
       add_trace(y = ~y4, type = 'scatter', mode = "lines", name = 'Mood') %>%
-      layout(title = 'Relative Barmode',
+      layout(title = 'Hours of Sleep and Mood',
              xaxis = list(title = 'X axis'),
              yaxis = list(title = 'Y axis'),
              barmode = 'relative')
@@ -105,7 +118,8 @@ ui <- fluidPage(
     sleep data and indicates if the user had a nightmare or a reoccurring nightmare. The purpose of dreamR is to help 
     end users monitor the aspects of sleep and dreams that indicates anxiety, depression, and PTSD so that they can better 
     overcome traumatic events, or even for people to simply take care of their mental health from monitoring dreams and 
-    sleep."
+    sleep.
+    "
     
   ), 
   
@@ -119,8 +133,9 @@ ui <- fluidPage(
                h3("Dream Entry"),
                plotOutput("plot2")
       ),
-      tabPanel("sentiment"
+      tabPanel("Stress and Nightmare Intensity",
                #sentiment analysis of day and dream entries
+               plotlyOutput('plot4')
       ),
       tabPanel("sleep and mood", 
                    plotlyOutput('plot3'))
