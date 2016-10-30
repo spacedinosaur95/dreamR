@@ -100,6 +100,13 @@ ui <- fluidPage(
   # make sidebar panel
   sidebarPanel( 
     # dates to look at because of indication of anxiety/depression/PTSD
+    
+    "dreamR analyzes text entries to help end users understand their dreams. Additionally, dreamR compares mood and 
+    sleep data and indicates if the user had a nightmare or a reoccurring nightmare. The purpose of dreamR is to help 
+    end users monitor the aspects of sleep and dreams that indicates anxiety, depression, and PTSD so that they can better 
+    overcome traumatic events, or even for people to simply take care of their mental health from monitoring dreams and 
+    sleep."
+    
   ), 
   
   # make a main panel
